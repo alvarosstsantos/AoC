@@ -1,25 +1,16 @@
 import sys
 from functools import reduce
 
-instructions: str = sys.argv[1]
+
+def challenge_1(instructions: str = sys.argv[1]):
+    return reduce(lambda x, y: x + 1 if y == "(" else x - 1, instructions, 0)
 
 
-def challenge_1():
-    print(reduce(lambda x, y: x + 1 if y == "(" else x - 1, instructions, 0))
-
-
-def challenge_2():
+def challenge_2(instructions: str = sys.argv[1]):
     floor = 0
 
-    for idx, i in enumerate(instructions, start=1):
-        if i == "(":
-            floor += 1
-        else:
-            floor -= 1
+    for i,  x in enumerate(instructions, start=1):
+        floor += (x == "(") - (x == ")")
 
-        if floor <= -1:
-            print(idx)
-            break
-
-
-challenge_1()
+        if floor < 0:
+            return i
