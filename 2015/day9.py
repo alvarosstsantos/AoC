@@ -1,63 +1,59 @@
 #!/usr/bin/env python
 
+from collections import defaultdict
+from functools import cache, wraps
 import sys
 import re
 
 
+def freezesetargs(func):
+    @wraps(func)
+    def wrapped(*args, **kwargs):
+        args = (frozenset(arg) if isinstance(
+            arg, set) else arg for arg in args)
+        kwargs = {k: frozenset(v) if isinstance(
+            v, set) else v for k, v in kwargs.items()}
+        return func(*args, **kwargs)
+    return wrapped
+
+
 def challenge(text: str) -> int:
     pattern = r"(\w+)\sto\s(\w+)\s=\s(\d+)"
-    nodes_set: set[tuple[str, str, int]] = set()
-    vertices = []
+
+    nodes = set()
+    distances = defaultdict(dict)
 
     for line in text.split("\n"):
         match = re.match(pattern, line)
 
-        vertices.append(match.groups())
+        n1, n2, d = match.groups()
 
-        nodes_set.add(match.group(1))
-        nodes_set.add(match.group(2))
+        distances[n1][n2] = int(d)
+        distances[n2][n1] = int(d)
 
-    nodes = list(nodes_set)
-    adjacent_nodes_distances: list[list[None | int]] = [
-        [None for _ in range(len(nodes))] for _ in range(len(nodes))]
-
-    for node_1, node_2, distance in vertices:
-        node_1_index = nodes.index(node_1)
-        node_2_index = nodes.index(node_2)
-
-        adjacent_nodes_distances[node_1_index][node_2_index] = int(distance)
-        adjacent_nodes_distances[node_2_index][node_1_index] = int(distance)
-
-    def remove_by_index(ls: list, i: int):
-        return [e for j, e in enumerate(ls) if j != i]
+        nodes.update([n1, n2])
 
     smallest_distance = sys.maxsize
 
-    def traverse(node: int, foward_nodes: list[int], total_distance=0):
+    @freezesetargs
+    @cache
+    def tsp(start, remaining, distance=0):
         nonlocal smallest_distance
 
-        if total_distance is None:
-            return None
+        if not remaining:
+            if distance < smallest_distance:
+                smallest_distance = distance
 
-        if len(foward_nodes) == 0:
-            if total_distance < smallest_distance:
-                smallest_distance = total_distance
+        for n in remaining:
+            d = distances[start][n]
 
-            return total_distance
+            if d:
+                tsp(n, remaining - {n},  distance + d)
 
-        for i in range(len(foward_nodes)):
-            distance = adjacent_nodes_distances[node][foward_nodes[i]]
-            new_total_distance = total_distance + distance if distance is not None else None
+    for n in nodes:
+        tsp(n, nodes - {n})
 
-            traverse(foward_nodes[i], remove_by_index(
-                foward_nodes, i), new_total_distance)
-
-    encoded_nodes = range(len(nodes))
-
-    for n in encoded_nodes:
-        traverse(n, remove_by_index(encoded_nodes, n))
-
-    print(smallest_distance)
+    return smallest_distance
 
 
 if __name__ == "__main__":
