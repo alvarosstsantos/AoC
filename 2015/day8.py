@@ -6,7 +6,7 @@ import re
 
 def challenge(strings: str) -> int:
     representation = 0
-    memory = 0
+    # memory = 0
     encoded = 0
 
     for string in strings.split("\n"):
