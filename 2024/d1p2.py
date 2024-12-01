@@ -3,23 +3,24 @@ import sys
 
 def main(text: str) -> int:
     X = []
-    Y = []
+    Y = {}
 
     for line in text.splitlines():
         x, y = line.split()
 
-        X.append(int(x))
-        Y.append(int(y))
+        X.append(x)
 
-    X.sort()
-    Y.sort()
+        if y in Y:
+            Y[y] += 1
+        else:
+            Y[y] = 1
 
-    return sum([abs(x - y) for (x, y) in zip(X, Y)])
+    return sum([int(x) * Y.get(x, 0) for x in X])
 
 
 def test():
     input = "3   4\n4   3\n2   5\n1   3\n3   9\n3   3"
-    assert 11 == main(input)
+    assert 31 == main(input)
 
 
 if __name__ == "__main__":
