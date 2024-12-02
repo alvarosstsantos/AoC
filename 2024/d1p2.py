@@ -2,8 +2,7 @@ import sys
 
 
 def main(text: str) -> int:
-    X = []
-    Y = {}
+    X, Y = [], {}
 
     for line in text.splitlines():
         x, y = line.split()

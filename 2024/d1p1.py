@@ -2,14 +2,13 @@ import sys
 
 
 def main(text: str) -> int:
-    X = []
-    Y = []
+    X, Y = [], []
 
     for line in text.splitlines():
-        x, y = line.split()
+        x, y = (int(z) for z in line.split())
 
-        X.append(int(x))
-        Y.append(int(y))
+        X.append(x)
+        Y.append(y)
 
     X.sort()
     Y.sort()
