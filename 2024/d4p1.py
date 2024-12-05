@@ -3,15 +3,7 @@ from typing import List, Tuple
 
 
 def main(text: str) -> int:
-    X = []
-
-    for line in text.splitlines():
-        character = []
-
-        for char in line:
-            character.append(char)
-        X.append(character)
-
+    X = [line.strip() for line in text.splitlines()]
     y, m, n = 0, len(X), len(X[0]) if X else 0
     directions = [(-1, 0), (0, -1), (-1, -1), (-1, +1)]
 
@@ -19,12 +11,14 @@ def main(text: str) -> int:
         nonlocal X, m, n
 
         dr, dc = direction
+        step = 0
         v = []
 
-        while (0 <= a < m and 0 <= b < n):
+        while (step < 4 and 0 <= a < m and 0 <= b < n):
             v.append(X[a][b])
             a += dr
             b += dc
+            step += 1
 
         return v
 
@@ -32,7 +26,8 @@ def main(text: str) -> int:
         for j in range(n):
             for d in directions:
                 s = "".join(section(i, j, d))
-                if s.startswith("XMAS") or s.startswith("SAMX"):
+
+                if s == "XMAS" or s == "SAMX":
                     y += 1
 
     return y

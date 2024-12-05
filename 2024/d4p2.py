@@ -3,22 +3,16 @@ from typing import List
 
 
 def main(text: str) -> int:
-    X = []
-
-    for line in text.splitlines():
-        character = []
-
-        for char in line:
-            character.append(char)
-        X.append(character)
-
+    X = [line.strip() for line in text.splitlines()]
     y, m, n = 0, len(X), len(X[0]) if X else 0
     cross = {"SM", "MS"}
 
-    def K(a, b) -> List[str]:
+    def K(a: int, b: int) -> List[str]:
+        nonlocal X
         return X[a-1][b-1] + X[a+1][b+1]
 
-    def L(a, b) -> List[str]:
+    def L(a: int, b: int) -> List[str]:
+        nonlocal X
         return X[a+1][b-1] + X[a-1][b+1]
 
     for i in range(1, m-1):
