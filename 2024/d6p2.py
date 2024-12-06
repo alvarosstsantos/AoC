@@ -46,19 +46,19 @@ def main(text: str) -> int:
     for i in range(height):
         for j in range(length):
             if grid[i][j] == ".":
-                new_grid = [line.copy() for line in grid]
-                new_grid[i][j] = "#"
+                grid[i][j] = "#"
 
-                if check_loop(new_grid, direction, x1, y1):
+                if check_loop(grid, direction, x1, y1):
                     total += 1
+
+                grid[i][j] = "."
 
     return total
 
 
 def test():
     input = "....#.....\n.........#\n..........\n..#.......\n.......#..\n..........\n.#..^.....\n........#.\n#.........\n......#..."
-    # assert 6 == main(input)
-    print(main(input))
+    assert 6 == main(input)
 
 
 if __name__ == "__main__":
