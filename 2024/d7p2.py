@@ -3,23 +3,25 @@ from typing import List
 
 
 def main(text: str) -> int:
-    def g(Y: List[int], x: int) -> List[int]:
+    def g(Y: List[int], x: int, target: int) -> List[int]:
         Z = []
 
         for y in Y:
-            Z.append(y + x)
-            Z.append(y * x)
-            Z.append(int(str(y) + str(x)))
+            W = [y + x, y * x, int(str(y) + str(x))]
+
+            for w in W:
+                if w <= target:
+                    Z.append(w)
 
         return Z
 
-    def f(X: List[int], y: int) -> bool:
+    def f(X: List[int], target: int) -> bool:
         Y = [X[0]]
 
         for x in X[1:]:
-            Y = g(Y, x)
+            Y = g(Y, x, target)
 
-        return y in Y
+        return target in Y
 
     s = 0
 
